@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from tqdm import tqdm
 from urllib.parse import urljoin, urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+=======
+>>>>>>> 436484c (Initial commit)
 from urllib.parse import urlparse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -51,8 +54,11 @@ import concurrent.futures
 from pathlib import Path
 from fuzzywuzzy import fuzz, process
 import html
+<<<<<<< HEAD
 import secrets
 import sys
+=======
+>>>>>>> 436484c (Initial commit)
 
 
 #
@@ -241,7 +247,11 @@ def get_args():
 def get_server_info(target_domain):
     url = f"http://{target_domain}"
     try:
+<<<<<<< HEAD
         response = requests.get(url, timeout=10)  # Timeout set to 10 seconds
+=======
+        response = requests.get(url)
+>>>>>>> 436484c (Initial commit)
         if response.status_code == 200:
             server_header = response.headers.get("Server", "N/A")
             x_powered_by_header = response.headers.get("X-Powered-By", "N/A")
@@ -396,7 +406,11 @@ def test_sql_injection(url):
 
 
 def get_all_forms(url):
+<<<<<<< HEAD
     soup = BeautifulSoup(requests.get(url, timeout=10).content, "html.parser")
+=======
+    soup = BeautifulSoup(requests.get(url).content, "html.parser")
+>>>>>>> 436484c (Initial commit)
     return soup.find_all("form")
 
 
@@ -427,8 +441,13 @@ def submit_form(form_details, url, value):
             if input_name and input_value:
                 data[input_name] = input_value
         if form_details["method"] == "post":
+<<<<<<< HEAD
             return requests.post(target_url, data=data, timeout=10)
         return requests.get(target_url, params=data, timeout=10)
+=======
+            return requests.post(target_url, data=data)
+        return requests.get(target_url, params=data)
+>>>>>>> 436484c (Initial commit)
 
 #
 #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
@@ -515,6 +534,7 @@ def csrf(domain_name):
         import concurrent.futures
         from pathlib import Path
     except ImportError:
+<<<<<<< HEAD
         print(f"{lightning} Vulnscan is not compatible with Python version 2. Please run it with Python version 3.")
         return
 
@@ -528,6 +548,19 @@ def csrf(domain_name):
         )
         # Exiting to prevent further execution without the dependency
         exit(1)
+=======
+        print('%s Vulnscan is not compatible with python version 2. Please run it with python version 3.' % bad)
+
+    try:
+        from fuzzywuzzy import fuzz, process
+
+    except ImportError:
+        import os
+        print('%s fuzzywuzzy library is not installed, installing now.' % info)
+        os.system('pip3 install fuzzywuzzy')
+        print('%s fuzzywuzzy has been installed, please restart Vulnscan.' % info)
+        quit()
+>>>>>>> 436484c (Initial commit)
 
     # Interactive input for the target domain
     target = domain_name
@@ -535,6 +568,7 @@ def csrf(domain_name):
 
     # Additional interactive input for other parameters (you can customize this part)
     delay = int(
+<<<<<<< HEAD
         input('%s Enter the delay between requests (default is 0 ): ' % info) or 0)  # Delay: Time between requests (throttling to prevent being flagged as malicious).
     level = int(
         input('%s Enter the number of levels to crawl (default is 2 ): ' % info) or 2)  # Crawl Levels: Depth of URL crawling on the site
@@ -542,6 +576,15 @@ def csrf(domain_name):
         input('%s Enter the HTTP request timeout (default is 20 ): ' % info) or 20)  # Timeout: Maximum waiting time for HTTP responses
     threadCount = int(
         input('%s Enter the number of threads (default is 2 ): ' % info) or 2)  # Thread Count: Number of concurrent threads for crawling
+=======
+        input('%s Enter the delay between requests (default is 0 ): ' % info) or 0)
+    level = int(
+        input('%s Enter the number of levels to crawl (default is 2 ): ' % info) or 2)
+    timeout = int(
+        input('%s Enter the HTTP request timeout (default is 20 ): ' % info) or 20)
+    threadCount = int(
+        input('%s Enter the number of threads (default is 2 ): ' % info) or 2)
+>>>>>>> 436484c (Initial commit)
 
     delay_desc = 'Delay between requests'
     level_desc = 'Number of levels to crawl'
@@ -566,12 +609,15 @@ def csrf(domain_name):
     tokenDatabase = []
     insecureForms = []
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Crawling the Website
     ######################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     print(' %s \n Phase: Crawling %s[%s1/6%s]%s' %
           (lightning, green, end, green, end))
     csrf_results.append('Phase: Crawling [1/6]')
@@ -585,6 +631,7 @@ def csrf(domain_name):
           (info, dataset[1], len(allForms), ' '))
     csrf_results.append('\r%s Crawled %i URL(s) and found %i form(s).%-10s' %
                         (info, dataset[1], len(allForms), ' '))
+<<<<<<< HEAD
 
     #########################################################################################################################################################
     #########################################################################################################################################################
@@ -592,6 +639,8 @@ def csrf(domain_name):
     #########################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     print(' %s \n Phase: Evaluating %s[%s2/6%s]%s' %
           (lightning, green, end, green, end))
     csrf_results.append('Phase: Evaluating [2/6]')
@@ -620,12 +669,15 @@ def csrf(domain_name):
                 csrf_results.append('%s %s %s[%s%s%s]%s' %
                                     (bad, url, green, end, form, green, end))
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Replay Attack Analysis
     #########################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     print(' %s \n Phase: Comparing %s[%s3/6%s]%s' %
           (lightning, green, end, green, end))
     csrf_results.append('Phase: Comparing [3/6]')
@@ -681,12 +733,15 @@ def csrf(domain_name):
         csrf_results.append("Error: First sublist in allTokens is empty.")
         return
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Hash Pattern Matching
     #########################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     if allTokens and len(allTokens) > 0:
         aToken = allTokens[0]
         if aToken:
@@ -705,12 +760,15 @@ def csrf(domain_name):
                     print(' %s>%s %s' % (yellow, end, name))
                     csrf_results.append(' %s>%s %s' % (yellow, end, name))
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Comparing Tokens , High similarity indicates weak randomness in token generation, making the site vulnerable
     #########################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
             def fuzzy(tokens):
                 averages = []
                 for token in tokens:
@@ -774,6 +832,7 @@ def csrf(domain_name):
     simTokens = []
     print(' %s \n Phase: Observing %s[%s4/6%s]%s' %
           (lightning, green, end, green, end))
+<<<<<<< HEAD
 
     #########################################################################################################################################################
     #########################################################################################################################################################
@@ -781,6 +840,8 @@ def csrf(domain_name):
     ######################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     csrf_results.append('Phase: Observing [4/6]')
     print('%s 100 simultaneous requests are being made, please wait.' % info)
     csrf_results.append(
@@ -803,7 +864,11 @@ def csrf(domain_name):
 
     # Limit the number of iterations to 100
     for _ in range(100):
+<<<<<<< HEAD
         sample = secrets.choice(tokenDatabase)
+=======
+        sample = random.choice(tokenDatabase)
+>>>>>>> 436484c (Initial commit)
         goodToken = list(sample.values())[0]
         if len(goodToken) > 0:
             goodCandidate = list(sample.keys())[0]
@@ -840,12 +905,15 @@ def csrf(domain_name):
         csrf_results.append(
             '%s Different tokens were issued for simultaneous requests.' % info)
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Mobile Browser Simulation || Simulates a request from a mobile browser to check if CSRF protection is consistent across devices.
     ######################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     print(' %s \n Phase: Testing %s[%s5/6%s]%s' %
           (lightning, green, end, green, end))
     csrf_results.append('Phase: Testing [5/6]')
@@ -914,12 +982,15 @@ def csrf(domain_name):
     csrf_results.append(
         '%s Making a request without CSRF token parameter.' % run)
 
+<<<<<<< HEAD
     #########################################################################################################################################################
     #########################################################################################################################################################
     # Token Removal and Manipulation || Checking if the server accepts requests without a valid token aka modified token
     ######################################################################################################################################################
     #########################################################################################################################################################
 
+=======
+>>>>>>> 436484c (Initial commit)
     data = modifyManipulateAPI(origData, 'remove')
     response = sendRequest(origUrl, data, headers, origGET, 0)
     if response.status_code == originalCode:
@@ -1026,6 +1097,7 @@ def csrf(domain_name):
 
 def certificate(url):
     try:
+<<<<<<< HEAD
         hostname = url  # Use the passed `url` parameter
         context = ssl.create_default_context()
 
@@ -1065,6 +1137,28 @@ certificate_results = []
 
 def analyze_certificate(domain, port):
     global certificate_results
+=======
+        hostname = domain_name
+        context = ssl.create_default_context()
+        with socket.create_connection((hostname, 443)) as sock:
+            with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+                chain = ssock.getpeercert()
+                print(chain)
+                print("\n")
+                print(f"SSL certificate for {domain_name} is valid.")
+
+    except ssl.SSLError as e:
+        # The certificate validation failed
+        print(f"SSL certificate validation for {domain_name} failed: {e}")
+        return False
+    except socket.error as e:
+        # Failed to connect to the specified domain
+        print(f"Failed to connect to {domain_name}: {e}")
+        return False
+
+
+def analyze_certificate(domain, port):
+>>>>>>> 436484c (Initial commit)
     try:
         # Create a socket object
         with socket.create_connection((domain, port)) as sock:
@@ -1077,6 +1171,7 @@ def analyze_certificate(domain, port):
 
                 # Extract and display certificate details
                 print(f"[+] SSL/TLS Certificate Analysis for {domain}:{port}")
+<<<<<<< HEAD
                 result = [
                     f"[+] SSL/TLS Certificate Analysis for {domain}:{port}",
                     f"Common Name (CN): {x509_cert.subject.rfc4514_string()}",
@@ -1094,6 +1189,52 @@ def analyze_certificate(domain, port):
         print(error_message)
         certificate_results.append(error_message)
     return certificate_results
+=======
+                print(
+                    f"Common Name (CN): {x509_cert.subject.rfc4514_string()}")
+                print(f"Issuer: {x509_cert.issuer.rfc4514_string()}")
+                print(f"Serial Number: {x509_cert.serial_number}")
+                print(f"Not Valid Before: {x509_cert.not_valid_before}")
+                print(f"Not Valid After: {x509_cert.not_valid_after}")
+                print(
+                    f"Signature Algorithm: {x509_cert.signature_algorithm_oid._name}")
+                print(f"Version: {x509_cert.version.name}")
+
+                certificate_results.append(
+                    f"[+] SSL/TLS Certificate Analysis for {domain}:{port}")
+                certificate_results.append(
+                    f"Common Name (CN): {x509_cert.subject.rfc4514_string()}")
+                certificate_results.append(
+                    f"Issuer: {x509_cert.issuer.rfc4514_string()}")
+                certificate_results.append(
+                    f"Serial Number: {x509_cert.serial_number}")
+                certificate_results.append(
+                    f"Not Valid Before: {x509_cert.not_valid_before}")
+                certificate_results.append(
+                    f"Not Valid After: {x509_cert.not_valid_after}")
+                certificate_results.append(
+                    f"Signature Algorithm: {x509_cert.signature_algorithm_oid._name}")
+                certificate_results.append(
+                    f"Version: {x509_cert.version.name}")
+
+    except socket.timeout:
+        print(f"[-] Connection to {domain}:{port} timed out.")
+        certificate_results(f"[-] Connection to {domain}:{port} timed out.")
+    except socket.error as e:
+        print(
+            f"[-] Error occurred while connecting to {domain}:{port}: {str(e)}")
+        certificate_results(
+            f"[-] Error occurred while connecting to {domain}:{port}: {str(e)}")
+    except ssl.SSLError as e:
+        print(f"[-] SSL/TLS Error occurred: {str(e)}")
+        certificate_results(f"[-] SSL/TLS Error occurred: {str(e)}")
+    except x509.CertificateError as e:
+        print(f"[-] Certificate Error occurred: {str(e)}")
+        certificate_results(f"[-] Certificate Error occurred: {str(e)}")
+    except Exception as e:
+        print(f"[-] An unexpected error occurred: {str(e)}")
+        certificate_results(f"[-] An unexpected error occurred: {str(e)}")
+>>>>>>> 436484c (Initial commit)
 
 
 location_cache = {}
@@ -1107,6 +1248,7 @@ location_cache = {}
 #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
 
+<<<<<<< HEAD
 locations_data = []
 
 
@@ -1151,6 +1293,78 @@ def sanitize_html(html_content):
     if isinstance(html_content, str):
         return html.escape(html_content)
     return str(html_content)  # Convert non-strings to string
+=======
+
+def get_location(ip_address, retry_attempts=1, delay_seconds=3):
+    if ip_address in location_cache:
+        return location_cache[ip_address]
+    for attempt in range(retry_attempts):
+        try:
+            response = requests.get(f'https://ipapi.co/{ip_address}/json/')
+            # Raise an exception for HTTP errors (e.g., 404, 500, etc.)
+            response.raise_for_status()
+            data = response.json()
+            print(response)
+            location_data = {
+                "ip": ip_address,
+                "network": data.get("network"),
+                "version": data.get("version"),
+                "city": data.get("city"),
+                "region": data.get("region"),
+                "region_code": data.get("region_code"),
+                "country": data.get("country_name"),
+                "country_code": data.get("country_code"),
+                "country_code_iso3": data.get("country_code_iso3"),
+                "country_capital": data.get("country_capital"),
+                "country_tld": data.get("country_tld"),
+                "continent_code": data.get("continent_code"),
+                "in_eu": data.get("in_eu"),
+                "postal": data.get("postal"),
+                "latitude": data.get("latitude"),
+                "longitude": data.get("longitude"),
+                "timezone": data.get("timezone"),
+                "utc_offset": data.get("utc_offset"),
+                "country_calling_code": data.get("country_calling_code"),
+                "currency": data.get("currency"),
+                "currency_name": data.get("currency_name"),
+                "languages": data.get("languages"),
+                "country_area": data.get("country_area"),
+                "country_population": data.get("country_population"),
+                "asn": data.get("asn"),
+                "org": data.get("org")
+            }
+            # Cache the result for future use
+            print(data)
+            locations_data.append(location_data)
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching location data for {ip_address}: {e}")
+            if response.status_code == 200:
+                # Parse the JSON data
+                json_data = response.json()
+                # Print the JSON data
+                print(json_data)
+            elif response.status_code == 429:
+                print("Too many requests. Retrying after waiting...")
+                time.sleep(2 ** attempt)  # Exponential backoff
+            else:
+                print("Unknown error. Exiting...")
+                break
+        except requests.exceptions.HTTPError as err:
+            print(f"HTTP error occurred: {err}")
+        except requests.exceptions.RequestException as err:
+            print(f"An error occurred: {err}")
+
+
+def sanitize_html(html_content):
+    # Remove HTML tags
+    stripped_content = html_content.replace("<", "").replace(">", "")
+
+    # Escape special characters
+    escaped_content = html.escape(stripped_content)
+
+    return escaped_content
+>>>>>>> 436484c (Initial commit)
 
 
 active_domains = []
@@ -1163,7 +1377,10 @@ csrf_results = []
 certificate_results = []
 locations_data = []
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 436484c (Initial commit)
 #
 #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
@@ -1173,7 +1390,11 @@ locations_data = []
 #
 
 
+<<<<<<< HEAD
 def generate_report(domain_name, ip_address, options, args, active_domains=None, location_data=None, server_info=None, port_scan_results=None, sql_test_results=None, xss_test_results=None, csrf_results=None, certificate_results=[], locations_data=None):
+=======
+def generate_report(domain_name, ip_address, options, args, active_domains=None, location_data=None, server_info=None, port_scan_results=None, sql_test_results=None, xss_test_results=None, csrf_results=None, certificate_results=None, locations_data=None):
+>>>>>>> 436484c (Initial commit)
     report_filename = f"VulnScan_Report_{time.strftime('%Y%m%d%H%M%S')}.pdf"
 
     doc = SimpleDocTemplate(report_filename, pagesize=letter)
@@ -1281,9 +1502,14 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
             # Ensure info is converted to strings
             content.append(Paragraph(str(info), styles['Normal']))
         content.append(Spacer(1, 12))
+<<<<<<< HEAD
     print(certificate_results)
     if certificate_results:
         print(certificate_results)
+=======
+
+    if certificate_results:
+>>>>>>> 436484c (Initial commit)
         content.append(
             Paragraph("<b>Certificate Detection Results:</b>", styles['Heading2']))
         certificate_results.extend([
@@ -1295,8 +1521,13 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
             "<b>&nbsp;&nbsp;&nbsp;&nbsp;- Load Balancer Configuration :</b> If your website is behind a load balancer or reverse proxy, ensure that the load balancer does not expose sensitive SSL certificate details in headers or error responses.",
             "<b>&nbsp;&nbsp;&nbsp;&nbsp;- Security Headers: </b> Implement security headers such as Content Security Policy (CSP) to mitigate the impact of successful attacks that may expose certificate details."
         ])
+<<<<<<< HEAD
         print(certificate_results)
         for info in certificate_results:
+=======
+
+        for info in certificate_results:  # Iterate over the elements of certificate_results list
+>>>>>>> 436484c (Initial commit)
             content.append(Paragraph(str(info), styles['Normal']))
         content.append(Spacer(1, 12))
 
@@ -1318,6 +1549,11 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
 #
 #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 436484c (Initial commit)
 if __name__ == "__main__":
     while True:
         domain_name = input("\nEnter the target domain : ")
@@ -1339,7 +1575,11 @@ if __name__ == "__main__":
             print("10. Report Generation")
             print("11. Exit\n")
             choice = input(
+<<<<<<< HEAD
                 "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 (or) 11): ")
+=======
+                "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 or 11): ")
+>>>>>>> 436484c (Initial commit)
 
             if choice == '1':
                 break  # Change Domain
@@ -1445,6 +1685,7 @@ if __name__ == "__main__":
                 port = 443
                 certificate(domain_name)
                 analyze_certificate(domain, port)
+<<<<<<< HEAD
                 print(certificate_results)
             if choice == '9':
                 api_key = "a6a61c1fc0554232afae54c335c96340"
@@ -1467,3 +1708,20 @@ if __name__ == "__main__":
                     "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 (or) 11)")
 
 #  ecampus.psgtech.ac.in
+=======
+            if choice == '9':
+                location_data = get_location(ip_address)
+                if location_data:
+                    print("\nLocation Information:")
+                    for key, value in location_data.items():
+                        print(f"{key}: {value}")
+            elif choice == '10':
+                generate_report(
+                    domain_name, ip_address, options, args, active_domains, location_cache, server_info, port_scan_results, sql_test_results, xss_test_results, csrf_results, certificate_results, locations_data)
+            elif choice == '11':
+                print("Thank you for using VulnScan \n Exiting the script...")
+                sys.exit()
+            else:
+                print(
+                    "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 or 11)")
+>>>>>>> 436484c (Initial commit)
