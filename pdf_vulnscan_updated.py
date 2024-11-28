@@ -1144,13 +1144,267 @@ def get_location(ip_address, api_key):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+#            Directory Enumeration           #              Directory Enumeration                  #           Directory Enumeration           #
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+
+
+directory_results = []
+
+
+def directory_enumeration(url):
+    global directory_results
+    # Ensure the base URL ends with a slash
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "http://" + url
+    if not url.endswith('/'):
+        url += '/'
+
+    # Define the path to your subdirectories file
+    file_path = "/Users/gokulkannan.g/Desktop/vulnscan/subdirectories.txt"
+
+    try:
+        with open(file_path, "r") as file:
+            # Read lines from the file and strip any extra whitespace/newlines
+            common_directories = [line.strip()
+                                  for line in file if line.strip()]
+    except FileNotFoundError:
+        print(f"[-] Error: File not found at {file_path}")
+        return
+
+    print(f"Starting directory enumeration for {url}\n")
+    directory_results.append(f"Starting directory enumeration for {url}\n")
+    # Use tqdm to create a progress bar
+    for directory in tqdm(common_directories, desc="Scanning directories"):
+        # Skip entries that look like full URLs without a scheme
+        if "://" not in directory and "." in directory:
+            print(
+                f"[-] Skipping invalid entry (likely a URL without scheme): {directory}")
+            continue
+
+        # Ensure the target URL is absolute
+        target_url = urljoin(url, directory)
+
+        try:
+            # Make a GET request to the target URL
+            response = requests.get(target_url, timeout=5)
+
+            # Check the response status code
+            if response.status_code == 200:
+                print(f"[+] Directory Found: {target_url}")
+                directory_results.append(f"[+] Directory Found: {target_url}")
+            else:
+                print(
+                    f"[-] Directory Not Found: {target_url} (Status Code: {response.status_code})")
+        except requests.exceptions.RequestException as e:
+            print(f"[-] Error: {e}")
+            directory_results.append(f"[-] Error: {e}")
+
+    print("\nDirectory enumeration completed.\n")
+    directory_results.append("\nDirectory enumeration completed.\n")
+    return directory_results
+
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+#            Web Application Vulnerability Scanners           #              Web Application Vulnerability Scanners                  #           Web Application Vulnerability Scanners           #
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+
+
+vulnerability_results = []
+
+
+def web_application_vulnerability_scanner(url):
+    global vulnerability_results
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "http://" + url
+
+    if vulnerability_results is None:
+        vulnerability_results = []  # Initialize if not passed
+    options = Options()
+    options.headless = True  # Enable headless mode
+
+    # Initialize the WebDriver with headless configuration
+    driver = webdriver.Firefox(options=options)
+
+    try:
+        import time
+        from pprint import pprint
+        import zapv2
+
+        vulnerability_results = []  # List to store the results
+
+        zap = zapv2.ZAPv2(apikey="cbq78gjfpin0dgg5j0o7eefjnh")
+        zap.urlopen(url)
+
+        # Spider scanning
+        zap.spider.scan(url)
+        zap.ajaxSpider.scan(url)
+        print(f"Spider and Ajax Spider scanning {url} initiated.")
+        vulnerability_results.append(
+            f"Spider and Ajax Spider scanning {url} initiated.")
+
+        # Passive scanning
+        zap.ascan.scan(url)
+        while int(zap.pscan.records_to_scan) > 0:
+            print('Records to passive scan : ' + zap.pscan.records_to_scan)
+            vulnerability_results.append(
+                f"'Records to passive scan : ' + zap.pscan.records_to_scan")
+            time.sleep(2)
+        print('Passive Scan completed')
+        vulnerability_results.append(f"Passive Scan completed")
+
+        # Collect Passive scan results
+        hosts = ', '.join(zap.core.hosts)
+        alerts = zap.core.alerts()
+        print('Hosts: {}'.format(hosts))
+        print('Alerts: ')
+        pprint(alerts)
+        vulnerability_results.extend([
+            f"Hosts: {hosts}",
+            "Alerts: "
+        ])
+        vulnerability_results.extend(alerts)  # Append all alerts
+
+        # Active scanning
+        target = url
+        print(f'Active Scanning target {target}')
+        vulnerability_results.append(f"Active Scanning target {target}")
+        scanID = zap.ascan.scan(target)
+
+        from tqdm import tqdm
+        import time
+
+        # Initialize the progress bar
+        progress_bar = tqdm(
+            total=100, desc="Active Scan Progress", position=0, leave=True)
+
+        last_progress = 0  # Track the last recorded progress to avoid over-updating
+        while int(zap.ascan.status(scanID)) < 100:
+            # Get the current progress
+            current_progress = int(zap.ascan.status(scanID))
+
+            # Update the progress bar by the difference since the last update
+            progress_bar.update(current_progress - last_progress)
+            last_progress = current_progress  # Update the tracker
+
+            vulnerability_results.append(
+                f"Scan progress %: {current_progress}")
+            time.sleep(5)  # Check progress every 5 seconds
+
+        # Ensure the progress bar completes
+        progress_bar.n = 100
+        progress_bar.refresh()
+        progress_bar.close()
+
+        print("Active scan completed!")
+        vulnerability_results.append("Active Scan completed")
+
+        # Collect Active scan results
+        print('Hosts: {}'.format(hosts))
+        print('Alerts: ')
+        active_alerts = zap.core.alerts(baseurl=target)
+        pprint(active_alerts)
+        vulnerability_results.extend([
+            f"Hosts: {hosts}",
+            "Alerts: "
+        ])
+        vulnerability_results.extend(active_alerts)  # Append all active alerts
+
+        # Summarize vulnerabilities
+        for alert in active_alerts:
+            name = alert.get('name', 'N/A')
+            description = alert.get('description', 'N/A')
+            alert_url = alert.get('url', 'N/A')
+            print(f"[+] Vulnerability Found: {name}")
+            print(f"[+] Description: {description}")
+            print(f"[+] URL: {alert_url}")
+            vulnerability_results.append(f"[+] Vulnerability Found: {name}")
+            vulnerability_results.append(f"[+] Description: {description}")
+            vulnerability_results.append(f"[+] URL: {alert_url}")
+
+    except ImportError:
+        print("ZAP library not found. Please install it with 'pip install zapv2'")
+        return
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        vulnerability_results.append(f"An error occurred: {e}")
+    driver.quit()
+    return vulnerability_results
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+#            Crawling and Spidering           #              Crawling and Spidering                  #           Crawling and Spidering           #
+#
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#
+
+
+crawl_results = []
+
+
+def crawl_and_spider(url):
+    global crawl_results
+    if not url.startswith("http://") and not url.startswith("https://"):
+        url = "http://" + url
+
+    visited = set()
+    queue = [url]
+
+    while queue:
+        current_url = queue.pop(0)
+
+        if current_url in visited:
+            continue
+
+        visited.add(current_url)
+
+        try:
+            response = requests.get(current_url)
+
+            if response.status_code == 200:
+                print(f"[+] Visited: {current_url}")
+                crawl_results.append(f"\n\t[+] Visited: {current_url}")
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+                links = soup.find_all('a')
+
+                for link in links:
+                    link_url = link.get('href')
+                    if link_url:
+                        absolute_url = urljoin(current_url, link_url)
+                        if absolute_url not in visited:
+                            queue.append(absolute_url)
+                            crawl_results.append(
+                                f"\n\t[+] Found link: {absolute_url}")
+            else:
+                print(f"[-] Failed to visit: {current_url}")
+                crawl_results.append(f"\n\t[-] Failed to visit: {current_url}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"[-] Error: {e}")
+            crawl_results.append(f"\n\t[-] Error: {e}")
+
+    return crawl_results
+
+
 ################################################################################################################################
 
 
 def sanitize_html(html_content):
-    if isinstance(html_content, str):
-        return html.escape(html_content)
-    return str(html_content)  # Convert non-strings to string
+    # Remove HTML tags
+    stripped_content = html_content.replace("<", "").replace(">", "")
+
+    # Escape special characters
+    escaped_content = html.escape(stripped_content)
+
+    return escaped_content
 
 
 active_domains = []
@@ -1162,18 +1416,20 @@ xss_test_results = []
 csrf_results = []
 certificate_results = []
 locations_data = []
-
+directory_results = []
+vulnerability_results = []
+crawl_results = []
 
 #
-#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #        #       #       #       #        #
 #
-#            report             #             report            #            report             #           report              #          report       #
+#            report             #             report            #            report             #           report              #          report        #       #          report        #
 #
-#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #        #       #       #       #        #
 #
 
 
-def generate_report(domain_name, ip_address, options, args, active_domains=None, location_data=None, server_info=None, port_scan_results=None, sql_test_results=None, xss_test_results=None, csrf_results=None, certificate_results=[], locations_data=None):
+def generate_report(domain_name, ip_address, options, args, active_domains=None, location_data=None, server_info=None, port_scan_results=None, sql_test_results=None, xss_test_results=None, csrf_results=None, certificate_results=None, locations_data=None, directory_results=None, vulnerability_results=None, crawl_results=None):
     report_filename = f"VulnScan_Report_{time.strftime('%Y%m%d%H%M%S')}.pdf"
 
     doc = SimpleDocTemplate(report_filename, pagesize=letter)
@@ -1281,9 +1537,8 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
             # Ensure info is converted to strings
             content.append(Paragraph(str(info), styles['Normal']))
         content.append(Spacer(1, 12))
-    print(certificate_results)
+
     if certificate_results:
-        print(certificate_results)
         content.append(
             Paragraph("<b>Certificate Detection Results:</b>", styles['Heading2']))
         certificate_results.extend([
@@ -1295,8 +1550,8 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
             "<b>&nbsp;&nbsp;&nbsp;&nbsp;- Load Balancer Configuration :</b> If your website is behind a load balancer or reverse proxy, ensure that the load balancer does not expose sensitive SSL certificate details in headers or error responses.",
             "<b>&nbsp;&nbsp;&nbsp;&nbsp;- Security Headers: </b> Implement security headers such as Content Security Policy (CSP) to mitigate the impact of successful attacks that may expose certificate details."
         ])
-        print(certificate_results)
-        for info in certificate_results:
+
+        for info in certificate_results:  # Iterate over the elements of certificate_results list
             content.append(Paragraph(str(info), styles['Normal']))
         content.append(Spacer(1, 12))
 
@@ -1307,16 +1562,37 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
             content.append(Paragraph(str(info), styles['Normal']))
         content.append(Spacer(1, 12))
 
+    if directory_results:
+        content.append(
+            Paragraph("<b>Directory Information:</b>", styles['Heading2']))
+        for info in directory_results:
+            content.append(Paragraph(str(info), styles['Normal']))
+        content.append(Spacer(1, 12))
+
+    if vulnerability_results:
+        content.append(
+            Paragraph("<b>Vulnerability Information:</b>", styles['Heading2']))
+        for info in vulnerability_results:
+            content.append(Paragraph(str(info), styles['Normal']))
+        content.append(Spacer(1, 12))
+
+    if crawl_results:
+        content.append(
+            Paragraph("<b>Crawl Information:</b>", styles['Heading2']))
+        for info in crawl_results:
+            content.append(Paragraph(str(info), styles['Normal']))
+        content.append(Spacer(1, 12))
+
     doc.build(content)
     print(f"\nReport generated: {report_filename}")
 
 
 #
-#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
-#            main               #             main              #            main               #           main                #          main
+#            main               #             main              #            main               #           main                #          main         #       #          main         #
 #
-#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
+#       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
 if __name__ == "__main__":
     while True:
@@ -1336,10 +1612,13 @@ if __name__ == "__main__":
             print("7. CSRF Detection")
             print("8. SSL / TLS Certificate Detection")
             print("9. Location of the Server")
-            print("10. Report Generation")
-            print("11. Exit\n")
+            print("10. Directory Enumeration")
+            print("11. Web Application Vulnerability Scanning")
+            print("12. Crawling and Spidering")
+            print("13. Report Generation")
+            print("14. Exit\n")
             choice = input(
-                "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 (or) 11): ")
+                "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13 or 14): ")
 
             if choice == '1':
                 break  # Change Domain
@@ -1445,25 +1724,33 @@ if __name__ == "__main__":
                 port = 443
                 certificate(domain_name)
                 analyze_certificate(domain, port)
-                print(certificate_results)
             if choice == '9':
                 api_key = "a6a61c1fc0554232afae54c335c96340"
                 location_data = get_location(ip_address, api_key)
                 if location_data:
                     print("\nLocation Information:")
-                    for items in locations_data:
-                        print(locations_data)
+                    for key, value in location_data.items():
+                        print(f"{key}: {value}")
 
             elif choice == '10':
-                generate_report(
-                    domain_name, ip_address, options, args, active_domains, location_cache, server_info, port_scan_results, sql_test_results, xss_test_results, csrf_results, certificate_results, locations_data)
+                directory_enumeration(domain_name)
 
             elif choice == '11':
+                web_application_vulnerability_scanner(domain_name)
+
+            elif choice == '12':
+                crawl_and_spider(domain_name)
+
+            elif choice == '13':
+                generate_report(
+                    domain_name, ip_address, options, args, active_domains, location_cache, server_info, port_scan_results, sql_test_results, xss_test_results, csrf_results, certificate_results, locations_data, directory_results, vulnerability_results, crawl_results)
+
+            elif choice == '14':
                 print(
                     "Thank you for using VulnScan \n Exiting the VulnScan...")
                 sys.exit()
             else:
                 print(
-                    "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 (or) 11)")
+                    "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13 or 14)")
 
 #  ecampus.psgtech.ac.in

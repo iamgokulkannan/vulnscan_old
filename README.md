@@ -1,1 +1,1 @@
-# vulnscan-proj
+# vulnscan
