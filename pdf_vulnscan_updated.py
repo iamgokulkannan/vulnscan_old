@@ -1,3 +1,5 @@
+from xml.sax.saxutils import escape
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from tqdm import tqdm
@@ -1393,6 +1395,54 @@ def crawl_and_spider(url):
 
     return crawl_results
 
+################################################################################################################################
+
+
+def detect_waf(domain_name):
+    if not domain_name.startswith(("http://", "https://")):
+        domain_name = "http://" + domain_name
+    try:
+        # Send a request to the URL
+        response = requests.get(domain_name)
+
+        # Check for common security headers
+        security_headers = [
+            'X-Frame-Options', 'X-XSS-Protection', 'X-Content-Type-Options',
+            'Content-Security-Policy', 'Strict-Transport-Security', 'Referrer-Policy',
+            'Permissions-Policy', 'Feature-Policy'
+        ]
+
+        for header in security_headers:
+            if header not in response.headers:
+                return False
+
+        # Check for common security-related headers
+        security_related_headers = [
+            'Server', 'X-Powered-By', 'X-AspNet-Version', 'X-AspNetMvc-Version'
+        ]
+
+        for header in security_related_headers:
+            if header in response.headers:
+                return False
+
+        # Check for WAF-specific headers
+        waf_headers = [
+            'X-AWS-ELB', 'X-AWS-FID', 'X-AWS-FILTERING', 'X-AWS-ID',
+            'X-AWS-REQUEST-ID', 'X-AWS-VERSION', 'X-Cache', 'X-Cache-Lookup',
+            'X-Edge-Location', 'X-Edge-Response-Result-Cached', 'X-Edge-Response-Result-Error',
+            'X-Edge-Response-Result-Uncached'
+        ]
+
+        for header in waf_headers:
+            if header in response.headers:
+                return True
+
+        return True
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        return False
+
 
 ################################################################################################################################
 
@@ -1573,7 +1623,9 @@ def generate_report(domain_name, ip_address, options, args, active_domains=None,
         content.append(
             Paragraph("<b>Vulnerability Information:</b>", styles['Heading2']))
         for info in vulnerability_results:
-            content.append(Paragraph(str(info), styles['Normal']))
+            # Escape special characters in the info
+            sanitized_info = escape(str(info))
+            content.append(Paragraph(sanitized_info, styles['Normal']))
         content.append(Spacer(1, 12))
 
     if crawl_results:
@@ -1616,9 +1668,10 @@ if __name__ == "__main__":
             print("11. Web Application Vulnerability Scanning")
             print("12. Crawling and Spidering")
             print("13. Report Generation")
-            print("14. Exit\n")
+            print("14. WAF Detection")  # New WAF Detection Option
+            print("15. Exit\n")
             choice = input(
-                "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13 or 14): ")
+                "Enter a choice from the given options (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 or 15): ")
 
             if choice == '1':
                 break  # Change Domain
@@ -1725,7 +1778,7 @@ if __name__ == "__main__":
                 certificate(domain_name)
                 analyze_certificate(domain, port)
             if choice == '9':
-                api_key = "a6a61c1fc0554232afae54c335c96340"
+                api_key = os.getenv("API_KEY")
                 location_data = get_location(ip_address, api_key)
                 if location_data:
                     print("\nLocation Information:")
@@ -1744,13 +1797,18 @@ if __name__ == "__main__":
             elif choice == '13':
                 generate_report(
                     domain_name, ip_address, options, args, active_domains, location_cache, server_info, port_scan_results, sql_test_results, xss_test_results, csrf_results, certificate_results, locations_data, directory_results, vulnerability_results, crawl_results)
-
-            elif choice == '14':
-                print(
-                    "Thank you for using VulnScan \n Exiting the VulnScan...")
+            if choice == '14':
+                is_secure = detect_waf(domain_name)
+                if is_secure:
+                    print(
+                        f"\nThe URL {domain_name} has strong security headers.")
+                else:
+                    print(
+                        f"\nThe URL {domain_name} does not have strong security headers.")
+            elif choice == '15':
+                print("Thank you for using VulnScan\nExiting...")
                 sys.exit()
             else:
                 print(
-                    "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13 or 14)")
+                    "\nInvalid option. Please enter a valid option (1, 2, 3, 4, 5, 6, 7 , 8 , 9 , 10 , 11 , 12 , 13  , 14 or 15)")
 
-#  ecampus.psgtech.ac.in
