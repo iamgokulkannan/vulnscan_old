@@ -1826,14 +1826,14 @@ if __name__ == "__main__":
             print("10. Directory Enumeration")
             print("11. Web Application Vulnerability Scanning")
             print("12. Crawling and Spidering")
-            print("13. Advanced Report Generation")
-            print("14. WAF Detection")
-            print("15. Advanced Domain Enumeration")
-            print("16. Cloud Vulnerability Scan")
-            print("17. Advanced Web Application Scan")
-            print("18. API Security Testing")
-            print("19. AI-Powered Vulnerability Detection")
-            print("20. Comprehensive Security Scan")
+            print("13. WAF Detection")
+            print("14. Advanced Domain Enumeration")
+            print("15. Cloud Vulnerability Scan")
+            print("16. Advanced Web Application Scan")
+            print("17. API Security Testing")
+            print("18. AI-Powered Vulnerability Detection")
+            print("19. Comprehensive Security Scan")
+            print("20. Advanced Report Generation")
             print("21. Exit\n")
 
             choice = input("Enter a choice from the given options (1-21): ")
@@ -2021,20 +2021,6 @@ if __name__ == "__main__":
                 print("\n[+] Crawling and Spidering completed")
 
             elif choice == '13':
-                # Advanced Report Generation
-                if scan_results['findings']:
-                    print("\n[*] Generating Advanced Security Report...")
-                    reporter = AdvancedSecurityReporter(
-                        domain_name, scan_results)
-                    reports = reporter.generate_all_reports()
-
-                    print("\n[+] Reports generated successfully:")
-                    for format_type, file_path in reports.items():
-                        print(f"  - {format_type.upper()}: {file_path}")
-                else:
-                    print("\n[-] No scan results available. Run scans first.")
-
-            elif choice == '14':
                 # WAF Detection
                 print("\n[*] Running WAF Detection...")
                 waf_results = []
@@ -2056,7 +2042,7 @@ if __name__ == "__main__":
                 scan_results['findings']['waf_detection'] = waf_results
                 print("\n[+] WAF Detection completed")
 
-            elif choice == '15':
+            elif choice == '14':
                 # Advanced Domain Enumeration
                 print("\n[*] Running Advanced Domain Enumeration...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2067,7 +2053,7 @@ if __name__ == "__main__":
                 scan_results['findings']['advanced_domain_enumeration'] = results
                 print("\n[+] Advanced Domain Enumeration completed")
 
-            elif choice == '16':
+            elif choice == '15':
                 # Cloud Vulnerability Scan
                 print("\n[*] Running Cloud Vulnerability Scan...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2078,7 +2064,7 @@ if __name__ == "__main__":
                 scan_results['findings']['cloud_vulnerabilities'] = results
                 print("\n[+] Cloud Vulnerability Scan completed")
 
-            elif choice == '17':
+            elif choice == '16':
                 # Advanced Web Application Scan
                 print("\n[*] Running Advanced Web Application Scan...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2089,7 +2075,7 @@ if __name__ == "__main__":
                 scan_results['findings']['advanced_web_app_scan'] = results
                 print("\n[+] Advanced Web Application Scan completed")
 
-            elif choice == '18':
+            elif choice == '17':
                 # API Security Testing
                 print("\n[*] Running API Security Testing...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2108,7 +2094,7 @@ if __name__ == "__main__":
                 scan_results['findings']['api_security'] = results
                 print("\n[+] API Security Testing completed")
 
-            elif choice == '19':
+            elif choice == '18':
                 # AI-Powered Vulnerability Detection
                 print("\n[*] Running AI-Powered Vulnerability Detection...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2126,7 +2112,7 @@ if __name__ == "__main__":
                     scan_results['findings']['ai_findings'] = {'error': str(e)}
                     print(f"\n[-] Error during AI scan: {e}")
 
-            elif choice == '20':
+            elif choice == '19':
                 # Comprehensive Security Scan
                 print("\n[*] Running Comprehensive Security Scan...")
                 domain_with_scheme = ensure_url_scheme(domain_name)
@@ -2135,6 +2121,20 @@ if __name__ == "__main__":
                 # Update scan_results with comprehensive scan results
                 scan_results.update(results)
                 print("\n[+] Comprehensive Security Scan completed")
+
+            elif choice == '20':
+                # Advanced Report Generation
+                if scan_results['findings']:
+                    print("\n[*] Generating Advanced Security Report...")
+                    reporter = AdvancedSecurityReporter(
+                        domain_name, scan_results)
+                    reports = reporter.generate_all_reports()
+
+                    print("\n[+] Reports generated successfully:")
+                    for format_type, file_path in reports.items():
+                        print(f"  - {format_type.upper()}: {file_path}")
+                else:
+                    print("\n[-] No scan results available. Run scans first.")
 
             elif choice == '21':
                 print("Thank you for using VulnScan\nExiting...")
