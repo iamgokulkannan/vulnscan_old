@@ -2122,7 +2122,26 @@ if __name__ == "__main__":
                 scan_results.update(results)
                 print("\n[+] Comprehensive Security Scan completed")
 
+
             elif choice == '20':
+                # Security Tool Integration
+                print("\n[*] Running Security Tool Integration...")
+                
+                if scan_results['findings']:
+                    try:
+                        tool_integration = SecurityToolIntegration()
+                        export_results = tool_integration.export_all(scan_results, domain_name)
+                        
+                        print("\n[+] Export Results:")
+                        for tool, success in export_results.items():
+                            status = "Success" if success else "Failed"
+                            print(f"  - {tool}: {status}")
+                    except Exception as e:
+                        print(f"\n[-] Error during export: {e}")
+                else:
+                    print("\n[-] No scan results available. Run scans first.")
+            
+            elif choice == '21':
                 # Advanced Report Generation
                 if scan_results['findings']:
                     print("\n[*] Generating Advanced Security Report...")
@@ -2135,8 +2154,8 @@ if __name__ == "__main__":
                         print(f"  - {format_type.upper()}: {file_path}")
                 else:
                     print("\n[-] No scan results available. Run scans first.")
-
-            elif choice == '21':
+            
+            elif choice == '22':
                 print("Thank you for using VulnScan\nExiting...")
                 sys.exit()
             else:

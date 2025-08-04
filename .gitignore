@@ -1,12 +1,10 @@
 /FYP
+.FYP/
 
 .vscode/
 
-<<<<<<< HEAD
 /SIKE based signature Final Code
-=======
-/.SIKE based signature Final Code
->>>>>>> 436484c (Initial commit)
+.SIKE based signature Final Code/
 
 report.pdf
 VulnScan_Report_20240417142346.pdf

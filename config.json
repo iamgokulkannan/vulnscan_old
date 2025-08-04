@@ -6,7 +6,7 @@
     "run_ai_scan": true,
     "generate_report": true,
     "domain_enum": {
-        "wordlist": "wordlists/subdomains.txt",
+        "wordlist": "/subdomains.txt",
         "threads": 50,
         "timeout": 5
     },
@@ -35,5 +35,29 @@
         "formats": ["pdf", "html", "json"],
         "include_screenshots": true,
         "risk_scoring": true
+    },
+    "defectdojo": {
+        "url": "https://defectdojo.example.com",
+        "api_key": "YOUR_DEFECTDOJO_API_KEY"
+    },
+    "jira": {
+        "url": "https://your-jira.example.com",
+        "auth": "BASE64_ENCODED_CREDENTIALS",
+        "project": "SEC"
+    },
+    "slack": {
+        "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    },
+    "webhook": {
+        "url": "https://your-webhook-endpoint.example.com",
+        "headers": {
+            "Authorization": "Bearer YOUR_TOKEN",
+            "Content-Type": "application/json"
+        }
+    },
+    "siem": {
+        "type": "splunk",
+        "url": "https://your-splunk.example.com:8088/services/collector/event",
+        "token": "YOUR_SPLUNK_TOKEN"
     }
 }
