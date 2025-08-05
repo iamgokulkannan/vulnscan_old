@@ -1,22 +1,229 @@
-/FYP
-.FYP/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-.vscode/
+# C extensions
+*.so
 
-/SIKE based signature Final Code
-.SIKE based signature Final Code/
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-report.pdf
-VulnScan_Report_20240417142346.pdf
-VulnScan_Report_20240914225831.pdf 
-VulnScan_Report_20240919095656.pdf
-vulnscan.py
-vulnscan.zip
+# PyInstaller
+*.manifest
+*.spec
 
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-/venv
-.venv/
+# Spyder project settings
+.spyderproject
+.spyproject
 
-/__pycache__
-.__pycache__/
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project-specific files
+# Reports and outputs
+reports/
+*.pdf
+*.html
+*.json
+!vulscan/db/hashes.json  # Keep this file if it's part of your package
+
+# Logs
+*.log
+geckodriver.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+
+# Configuration files with sensitive data
+config.json
+!vulscan/config.json  # Keep this if it's part of your package
+
+# Test files
+test_*.py
+*_test.py
+
+# Documentation build
+docs/_build/
+docs/build/
+
+# Node.js (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Selenium browser drivers
+chromedriver
+geckodriver
+operadriver
+
+# Docker
+.dockerignore
+
+# Kubernetes
+*.kubeconfig
+
+# Cloud credentials
+.aws/
+.azure/
+.gcloud/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Binary files
+*.exe
+*.dll
+*.dylib
+
+# Sensitive data files
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Temporary scan results
+scan_results/
+results/
+output/
+
+# Cache directories
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environment specific
+.env.local
+.env.*.local
