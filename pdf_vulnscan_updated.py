@@ -1790,7 +1790,9 @@ def generate_advanced_report(domain_name):
 #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #       #
 #
 if __name__ == "__main__":
+
     # Initialize global results dictionary
+
     global scan_results
     scan_results = {
         'target': '',
@@ -1833,8 +1835,9 @@ if __name__ == "__main__":
             print("17. API Security Testing")
             print("18. AI-Powered Vulnerability Detection")
             print("19. Comprehensive Security Scan")
-            print("20. Advanced Report Generation")
-            print("21. Exit\n")
+            print("20. Running Security Tool Integration")
+            print("21. Advanced Report Generation")
+            print("22. Exit\n")
 
             choice = input("Enter a choice from the given options (1-21): ")
 
@@ -2122,16 +2125,16 @@ if __name__ == "__main__":
                 scan_results.update(results)
                 print("\n[+] Comprehensive Security Scan completed")
 
-
             elif choice == '20':
                 # Security Tool Integration
                 print("\n[*] Running Security Tool Integration...")
-                
+
                 if scan_results['findings']:
                     try:
                         tool_integration = SecurityToolIntegration()
-                        export_results = tool_integration.export_all(scan_results, domain_name)
-                        
+                        export_results = tool_integration.export_all(
+                            scan_results, domain_name)
+
                         print("\n[+] Export Results:")
                         for tool, success in export_results.items():
                             status = "Success" if success else "Failed"
@@ -2140,7 +2143,7 @@ if __name__ == "__main__":
                         print(f"\n[-] Error during export: {e}")
                 else:
                     print("\n[-] No scan results available. Run scans first.")
-            
+
             elif choice == '21':
                 # Advanced Report Generation
                 if scan_results['findings']:
@@ -2154,8 +2157,17 @@ if __name__ == "__main__":
                         print(f"  - {format_type.upper()}: {file_path}")
                 else:
                     print("\n[-] No scan results available. Run scans first.")
-            
+
             elif choice == '22':
+                if scan_results['findings']:
+                    print("\n[*] Generating Advanced Security Report...")
+                    reporter = AdvancedSecurityReporter(
+                        domain_name, scan_results)
+                    reports = reporter.generate_all_reports()
+
+                    print("\n[+] Reports generated successfully:")
+                    for format_type, file_path in reports.items():
+                        print(f"  - {format_type.upper()}: {file_path}")
                 print("Thank you for using VulnScan\nExiting...")
                 sys.exit()
             else:
