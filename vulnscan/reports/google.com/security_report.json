@@ -1,0 +1,21 @@
+{
+    "target": "https://google.com",
+    "scan_date": "2025-08-05 17:15:59",
+    "risk_score": 0,
+    "findings": {
+        "target": "https://google.com",
+        "timestamp": "2025-08-05 17:15:52",
+        "findings": {
+            "port_scan": [
+                "\n\tPort 80 is open"
+            ]
+        }
+    },
+    "recommendations": [
+        "Implement a Web Application Firewall (WAF) to protect against common attacks.",
+        "Regularly update and patch all software and dependencies.",
+        "Conduct regular security assessments and penetration testing.",
+        "Implement proper logging and monitoring for security events.",
+        "Follow the principle of least privilege for all user accounts and services."
+    ]
+}
